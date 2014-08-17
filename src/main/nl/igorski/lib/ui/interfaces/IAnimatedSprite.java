@@ -42,7 +42,24 @@ public interface IAnimatedSprite
 {
     /* state update and render logic */
 
-    public void update( long renderTime );
+    /**
+     * update is invoked by the Renderer prior
+     * to invoking an actual render request
+     *
+     * @param {long} timeStamp which can be
+     *         used for internal update logic (for
+     *         instance calculating delta time
+     *         since last update)
+     */
+    public void update( long timeStamp );
+
+    /**
+     * invoked by the Renderer, this is
+     * what actually renders the Sprites
+     * contents onto a Canvas
+     *
+     * @param {Canvas} canvas
+     */
     public void draw( Canvas canvas );
 
     /* coordinates */
