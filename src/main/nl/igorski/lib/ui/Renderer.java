@@ -45,8 +45,10 @@ import java.util.Vector;
  */
 public class Renderer extends BaseThread implements IViewPort
 {
-    protected Resources _resources;
+    protected Resources     _resources;
     protected SurfaceHolder _container;
+    protected int           _canvasWidth;
+    protected int           _canvasHeight;
 
     /* IViewPort properties */
 
@@ -87,6 +89,9 @@ public class Renderer extends BaseThread implements IViewPort
         _container  = aContainer;
         _resources  = aContext.getResources();
         _lastRender = System.currentTimeMillis() + 1000;
+
+        _canvasWidth  = aContainer.getSurfaceFrame().width();
+        _canvasHeight = aContainer.getSurfaceFrame().height();
 
         setFrameRate( aFrameRate );
 
@@ -250,10 +255,10 @@ public class Renderer extends BaseThread implements IViewPort
         final int theY = Math.round( _dragStartY + y );
 
         // keep container within constraints
-        if ( -theX > bounds.left && -theX < ( bounds.right - bounds.width() ))
+        if ( -theX > bounds.left && -theX < ( bounds.right - _canvasWidth ))
             offset.x = theX;
 
-        if ( -theY > bounds.top && -theY < ( bounds.bottom - bounds.height() ))
+        if ( -theY > bounds.top && -theY < ( bounds.bottom - _canvasHeight ))
             offset.y = theY;
     }
 
@@ -462,7 +467,7 @@ public class Renderer extends BaseThread implements IViewPort
                 _frameSamplesCollected = 0;
             }
         }
-        drawText( canvas, "fps:" + _realFps, bounds.width() - 85, bounds.height() - 40 );
+        drawText( canvas, "fps:" + _realFps, canvas.getWidth() - 85, canvas.getHeight() - 40 );
     }
 
     /**
