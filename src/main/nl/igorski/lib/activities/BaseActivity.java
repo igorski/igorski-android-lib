@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2015 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2012-2014 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -110,6 +110,15 @@ public class BaseActivity extends Activity
         //System.exit( 0 );
 
         destroy();
+    }
+
+    // cheap method to "refresh" an Activity by reloading it
+
+    public void reload()
+    {
+        final Intent intent = getIntent();
+        destroy(); // will invoke finish();
+        startActivity(intent);
     }
 
     public void destroy()
