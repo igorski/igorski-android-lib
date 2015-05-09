@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2012-2015 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 import nl.igorski.lib.framework.Core;
+import nl.igorski.lib.interfaces.listeners.IActivityResultListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +42,8 @@ import nl.igorski.lib.framework.Core;
  */
 public class BaseActivity extends Activity
 {
-    protected boolean _initialized = false;
+    protected boolean               _initialized = false;
+    private IActivityResultListener _resultListener;
 
     protected static final int RESULT_CLOSE_ALL = -1;
 
@@ -74,7 +76,14 @@ public class BaseActivity extends Activity
         init( applicationState );
     }
 
-    /* protected */
+    /* public methods */
+
+    public void setActivityResultListener( IActivityResultListener listener )
+    {
+        _resultListener = listener;
+    }
+
+    /* protected methods */
 
     protected void handleState( int aApplicationState )
     {
@@ -111,9 +120,17 @@ public class BaseActivity extends Activity
     @Override
     protected void onActivityResult( int requestCode, int resultCode, Intent data )
     {
+        if ( _resultListener != null )
+        {
+            if ( requestCode == _resultListener.getRequestCodeInterest() && resultCode == RESULT_OK )
+            {
+                _resultListener.handleActivityResult( requestCode, resultCode, data );
+                return; // prevents closing this Activity
+            }
+        }
         switch( resultCode )
         {
-            // quick way to close all open activities
+            // easy way to close all open activities
             case RESULT_CLOSE_ALL:
                 setResult( RESULT_CLOSE_ALL );
                 destroy();
@@ -121,7 +138,7 @@ public class BaseActivity extends Activity
         super.onActivityResult( requestCode, resultCode, data );
     }
 
-    /* private */
+    /* private methods */
 
     private void init( int aApplicationState )
     {
