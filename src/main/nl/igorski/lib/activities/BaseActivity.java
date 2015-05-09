@@ -24,6 +24,7 @@ package nl.igorski.lib.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -116,9 +117,15 @@ public class BaseActivity extends Activity
 
     public void reload()
     {
-        final Intent intent = getIntent();
-        destroy(); // will invoke finish();
-        startActivity(intent);
+        if ( Build.VERSION.SDK_INT >= 11 )
+        {
+            recreate();
+        }
+        else {
+            final Intent intent = getIntent();
+            destroy(); // will invoke finish();
+            startActivity( intent );
+        }
     }
 
     public void destroy()
